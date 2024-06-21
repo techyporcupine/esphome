@@ -1,0 +1,173 @@
+esphome:
+  name: garagesensors
+
+esp8266:
+  board: nodemcuv2
+  early_pin_init: false
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption: 
+    key: !secret encryption_key
+
+ota:
+  password: !secret ota_pwd
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
+  manual_ip:
+    static_ip: 10.0.16.16
+    gateway: 10.0.16.1
+    subnet: 255.255.255.0
+
+captive_portal:
+    
+sensor:
+  - platform: wifi_signal
+    name: "GarageSensors WiFi Strength"
+    update_interval: 480s
+
+  - platform: ultrasonic
+    id: ultrasonic_sensor1
+    trigger_pin: D1
+    echo_pin: D0
+    name: "Garage Door 1 Sonar"
+    update_interval: 2s
+    internal: true
+    filters:
+      filter_out: nan
+    timeout: 9m
+  - platform: ultrasonic
+    id: ultrasonic_sensor2
+    trigger_pin: D3
+    echo_pin: D5
+    name: "Garage Door 2 Sonar"
+    update_interval: 2s
+    internal: true
+    filters:
+      filter_out: nan
+    timeout: 9m
+
+text_sensor:
+  - platform: template
+    name: "Garage Door 1 state"
+    id: "garage1_state"
+    lambda: |-
+      if (id(ultrasonic_sensor1).state >= 0.05 && id(ultrasonic_sensor1).state <= 0.22) {
+        return {"Garage open"};
+      } else if (id(ultrasonic_sensor1).state >= 0.65 && id(ultrasonic_sensor1).state <= 1.2) {
+        return {"Car parked, Garage closed"};
+      } else if (id(ultrasonic_sensor1).state >= 2.42 && id(ultrasonic_sensor1).state <= 2.55) {
+        return {"Garage closed, No car"};
+      } else { 
+        return {"Unknown"};  
+      }
+    update_interval: 2s
+  - platform: template
+    name: "Garage Door 2 state"
+    id: "garage2_state"
+    lambda: |-
+      if (id(ultrasonic_sensor2).state >= 0.05 && id(ultrasonic_sensor2).state <= 0.22) {
+        return {"Garage open"};
+      } else if (id(ultrasonic_sensor2).state >= 0.65 && id(ultrasonic_sensor2).state <= 1.2) {
+        return {"Car parked, Garage closed"};
+      } else if (id(ultrasonic_sensor2).state >= 2.42 && id(ultrasonic_sensor2).state <= 2.55) {
+        return {"Garage closed, No car"};
+      } else { 
+        return {"Unknown"};  
+      }
+    update_interval: 2s
+
+binary_sensor:
+  - platform: status
+    name: "GarageSensors Status"
+
+
+switch:
+  - platform: gpio
+    pin: D2
+    name: "Garage Door 1 Relay"
+    id: door1_relay
+  - platform: gpio
+    pin: D6
+    name: "Garage Door 2 Relay"
+    id: door2_relay
+    inverted: true
+cover:
+  - platform: template
+    device_class: garage
+    name: "Garage Door 1"
+    id: garage_door_1
+    open_action:
+      - cover.template.publish:
+          id: garage_door_1
+          current_operation: OPENING
+      # Cancel any previous action
+      - switch.turn_off: door1_relay
+      # Turn the OPEN switch on briefly
+      - switch.turn_on: door1_relay
+      - delay: 0.2s
+      - switch.turn_off: door1_relay
+      - delay: 11.5s
+      - cover.template.publish:
+          id: garage_door_1
+          current_operation: IDLE
+    close_action:
+      - cover.template.publish:
+          id: garage_door_1
+          current_operation: CLOSING
+      - switch.turn_off: door1_relay
+      - switch.turn_on: door1_relay
+      - delay: 0.2s
+      - switch.turn_off: door1_relay
+      - delay: 10s
+      - cover.template.publish:
+          id: garage_door_1
+          current_operation: IDLE
+    lambda: !lambda |-
+      if (id(garage1_state).state == "Garage open") {
+        return COVER_OPEN;
+      } else {
+        return COVER_CLOSED;
+      }
+
+  - platform: template
+    device_class: garage
+    name: "Garage Door 2"
+    id: garage_door_2
+    open_action:
+      - cover.template.publish:
+          id: garage_door_2
+          current_operation: OPENING
+      # Cancel any previous action
+      - switch.turn_off: door2_relay
+      # Turn the OPEN switch on briefly
+      - switch.turn_on: door2_relay
+      - delay: 0.2s
+      - switch.turn_off: door2_relay
+      - delay: 11.5s
+      - cover.template.publish:
+          id: garage_door_2
+          current_operation: IDLE
+    close_action:
+      - cover.template.publish:
+          id: garage_door_2
+          current_operation: CLOSING
+      - switch.turn_off: door2_relay
+      - switch.turn_on: door2_relay
+      - delay: 0.2s
+      - switch.turn_off: door2_relay
+      - delay: 10s
+      - cover.template.publish:
+          id: garage_door_2
+          current_operation: IDLE
+    lambda: !lambda |-
+      if (id(garage2_state).state == "Garage open") {
+        return COVER_OPEN;
+      } else {
+        return COVER_CLOSED;
+      }

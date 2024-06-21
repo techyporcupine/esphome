@@ -1,0 +1,57 @@
+esphome:
+  name: sonoff3
+
+esp8266:
+  board: sonoff_basic
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption: 
+    key: !secret encryption_key
+
+ota:
+  password: !secret ota_pwd
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
+  manual_ip:
+    static_ip: 10.0.16.12
+    gateway: 10.0.16.1
+    subnet: 255.255.255.0
+
+captive_portal:
+    
+sensor:
+  - platform: wifi_signal
+    name: "Sonoff3 WiFi Strength"
+    update_interval: 480s
+
+binary_sensor:
+  - platform: status
+    name: "Sonoff3 Status"
+
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    name: "End Table Light Button"
+    on_press:
+      - light.toggle: relay
+
+light:
+  - platform: binary
+    name: "End Table Light"
+    output: light_output
+    id: relay
+
+output:
+  - id: light_output
+    platform: gpio
+    pin: GPIO12
