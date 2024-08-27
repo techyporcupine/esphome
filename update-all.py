@@ -6,17 +6,13 @@
 
 import subprocess
 import time
-from colorama import init as colorama_init
-from colorama import Fore
-from colorama import Style
 
-colorama_init()
 
 def update_function(deviceyaml):
-    print(f"{Fore.BLUE}Updating " + deviceyaml + f"! {Style.RESET_ALL}")
+    print("Updating " + deviceyaml + "!")
     time.sleep(1)
     subprocess.run(["esphome", "run", deviceyaml, "--no-logs"]) 
-    print(f"{Fore.BLUE}Updating complete! {Style.RESET_ALL}")
+    print("Updating complete!")
     time.sleep(1)
 
 update_function("bedrgb.yaml")
@@ -29,5 +25,4 @@ update_function("sonoff2.yaml")
 update_function("sonoff3.yaml")
 update_function("sonoff4.yaml")
 update_function("sonoff5.yaml")
-update_function("sunsense.yaml")
 update_function("workbench.yaml")
