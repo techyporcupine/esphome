@@ -1,0 +1,80 @@
+esphome:
+  name: lamp
+
+esp8266:
+  board: nodemcuv2
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption: 
+    key: !secret encryption_key
+
+ota:
+ - platform: esphome
+   password: !secret ota_pwd
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
+  manual_ip:
+    static_ip: 10.0.16.22
+    gateway: 10.0.16.1
+    subnet: 255.255.255.0
+
+captive_portal:
+    
+sensor:
+  - platform: wifi_signal
+    name: "Lamp WiFi Strength"
+    update_interval: 480s
+
+binary_sensor:
+  - platform: status
+    name: "Lamp Status"
+
+# Example configuration entry
+light:
+  - platform: rgb
+    name: "Lamp RGB"
+    red: red
+    green: green
+    blue: blue
+    effects:
+      - pulse:
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 0.5s
+          update_interval: 0.5s
+          min_brightness: 0%
+          max_brightness: 100%
+      - pulse:
+          name: "Slow Pulse"
+          # transition_length: 1s      # defaults to 1s
+          update_interval: 2s
+      - random:
+      - random:
+          name: "Fast Random"
+          transition_length: 1s
+          update_interval: 2s
+      - flicker:
+
+output:
+  - platform: esp8266_pwm
+    id: red
+    pin: D0
+    inverted: true
+
+  - platform: esp8266_pwm
+    id: green
+    pin: D1
+    inverted: true
+    max_power: 30%
+
+  - platform: esp8266_pwm
+    id: blue
+    pin: D2
+    inverted: true
+    max_power: 20%
