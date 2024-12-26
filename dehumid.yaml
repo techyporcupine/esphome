@@ -1,0 +1,75 @@
+esphome:
+  name: dehumid
+
+esp32:
+  board: esp32dev
+  #framework:
+  #  type: esp-idf
+  #  version: recommended
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption: 
+    key: !secret encryption_key
+
+ota:
+ - platform: esphome
+   password: !secret ota_pwd
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
+  #manual_ip:
+  #  static_ip: 10.0.16.22
+  #  gateway: 10.0.16.1
+  #  subnet: 255.255.255.0
+
+captive_portal:
+    
+sensor:
+  - platform: wifi_signal
+    name: "Dehumid WiFi Strength"
+    update_interval: 480s
+
+  - platform: ntc
+    sensor: resistance_sensor
+    calibration:
+      b_constant: 3950
+      reference_temperature: 25°C
+      reference_resistance: 100kOhm
+    name: Cold-Side Temperature
+
+  - platform: resistance
+    id: resistance_sensor
+    sensor: source_sensor
+    configuration: DOWNSTREAM
+    resistor: 81kOhm
+    reference_voltage: 3.3V
+    name: Thermistor Resistance
+
+  - platform: adc
+    id: source_sensor
+    pin: A6
+    update_interval: 10.0s
+    attenuation: auto
+
+  - platform: dht
+    pin: 23
+    temperature:
+      name: "Box Temperature"
+    humidity:
+      name: "Box Humidity"
+    update_interval: 60s
+
+binary_sensor:
+  - platform: status
+    name: "Dehumid Status"
+
+switch:
+  - platform: gpio
+    pin: 22
+    name: "Box Dehumidifier"
+    inverted: true

@@ -1,5 +1,5 @@
 esphome:
-  name: lamp
+  name: shelf_lamp
 
 esp8266:
   board: nodemcuv2
@@ -38,10 +38,11 @@ binary_sensor:
 # Example configuration entry
 light:
   - platform: rgb
-    name: "Lamp RGB"
+    name: "Shelf Lamp"
     red: red
     green: green
     blue: blue
+    restore_mode: RESTORE_DEFAULT_OFF
     effects:
       - pulse:
       - pulse:

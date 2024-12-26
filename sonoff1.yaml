@@ -51,6 +51,7 @@ light:
     name: "Couch Light"
     output: light_output
     id: relay
+    restore_mode: RESTORE_DEFAULT_OFF
 
 output:
   - id: light_output

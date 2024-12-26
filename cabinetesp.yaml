@@ -39,6 +39,7 @@ light:
   - platform: monochromatic
     name: "Cabinet Lights"
     output: output_component1
+    restore_mode: RESTORE_DEFAULT_OFF
     effects:
       - pulse:
       - pulse:
