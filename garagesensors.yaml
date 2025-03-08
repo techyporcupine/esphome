@@ -62,7 +62,7 @@ text_sensor:
         return {"Garage open"};
       } else if (id(ultrasonic_sensor1).state >= 0.65 && id(ultrasonic_sensor1).state <= 1.2) {
         return {"Car parked, Garage closed"};
-      } else if (id(ultrasonic_sensor1).state >= 2.42 && id(ultrasonic_sensor1).state <= 2.55) {
+      } else if (id(ultrasonic_sensor1).state >= 2.4 && id(ultrasonic_sensor1).state <= 2.6) {
         return {"Garage closed, No car"};
       } else { 
         return {"Unknown"};  
@@ -76,7 +76,7 @@ text_sensor:
         return {"Garage open"};
       } else if (id(ultrasonic_sensor2).state >= 0.65 && id(ultrasonic_sensor2).state <= 1.2) {
         return {"Car parked, Garage closed"};
-      } else if (id(ultrasonic_sensor2).state >= 2.42 && id(ultrasonic_sensor2).state <= 2.55) {
+      } else if (id(ultrasonic_sensor2).state >= 2.4 && id(ultrasonic_sensor2).state <= 2.6) {
         return {"Garage closed, No car"};
       } else { 
         return {"Unknown"};  
