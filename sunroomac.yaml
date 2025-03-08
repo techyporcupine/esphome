@@ -29,6 +29,9 @@ wifi:
     gateway: 10.0.16.1
     subnet: 255.255.255.0
 
+bluetooth_proxy:
+  active: true
+
 # Specify pins used by the board to comunicate with RS485 board - in this case M5STACK
 uart:
   tx_pin: GPIO1   # Use GPIO26 for ATOM Tail485 
@@ -53,7 +56,6 @@ light:
     rgb_order: GRB
     pin: 27
     num_leds: 1
-    rmt_channel: 0
     chipset: SK6812
     name: "NeoPixel Light"
     id: led
@@ -141,6 +143,16 @@ samsung_ac:
       room_humidity:
         name: "Indoor Humidity"
       
+      custom_sensor:
+      - name: "Indoor Temperature Fixed"
+        id: sunroomac_temp_fix
+        message: 0x4204
+        device_class: temperature
+        state_class: measurement
+        unit_of_measurement: "°C"
+        accuracy_decimals: 2
+        filters:
+        - multiply: 0.1
 
     - address: "10.00.00"
       # This sensor captures and monitors specific error codes returned by the HVAC system.
