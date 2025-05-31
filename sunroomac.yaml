@@ -29,8 +29,8 @@ wifi:
     gateway: 10.0.16.1
     subnet: 255.255.255.0
 
-# bluetooth_proxy:
-#   active: true
+bluetooth_proxy:
+  active: true
 
 # Specify pins used by the board to comunicate with RS485 board - in this case M5STACK
 uart:
