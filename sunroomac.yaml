@@ -22,11 +22,11 @@ ota:
    password: !secret ota_pwd
 
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_pwd
+  ssid: !secret wpa3_ssid
+  password: !secret wpa3_pwd
   manual_ip:
-    static_ip: 10.0.16.20
-    gateway: 10.0.16.1
+    static_ip: 10.15.16.20
+    gateway: 10.15.16.1
     subnet: 255.255.255.0
 
 bluetooth_proxy:
@@ -51,27 +51,27 @@ binary_sensor:
   - platform: status
     name: "SunroomAC Status"
 
-light:
-  - platform: esp32_rmt_led_strip
-    rgb_order: GRB
-    pin: 27
-    num_leds: 1
-    chipset: SK6812
-    name: "NeoPixel Light"
-    id: led
-    effects:
-      - pulse:
-          name: "Slow Pulse"
-          transition_length: 250ms
-          update_interval: 250ms
-          min_brightness: 50%
-          max_brightness: 100%
-      - pulse:
-          name: "Fast Pulse"
-          transition_length: 100ms
-          update_interval: 100ms
-          min_brightness: 50%
-          max_brightness: 100%
+#light:
+#  - platform: esp32_rmt_led_strip
+#    rgb_order: GRB
+#    pin: 27
+#    num_leds: 1
+#    chipset: SK6812
+#    name: "NeoPixel Light"
+#    id: led
+#    effects:
+#      - pulse:
+#          name: "Slow Pulse"
+#          transition_length: 250ms
+#          update_interval: 250ms
+#          min_brightness: 50%
+#          max_brightness: 100%
+#      - pulse:
+#          name: "Fast Pulse"
+#          transition_length: 100ms
+#          update_interval: 100ms
+#          min_brightness: 50%
+#          max_brightness: 100%
 
 
 
@@ -79,20 +79,15 @@ light:
 
 # Import custom component from GitHub
 external_components:
-  - source: github://omerfaruk-aran/esphome_samsung_hvac_bus@main # use @main if you want the latest development (possibly unstable?)
+  - source: github://techyporcupine/esphome_samsung_ac@temp-fix # use @main if you want the latest development (possibly unstable?)
     components: [samsung_ac]
+    refresh: 0s
 
 # Configuration of AC component
 samsung_ac:
   # For NonNASA devices the following option can be enabled to prevent the device from sleeping when idle. This allows
   # values like internal and external temperature to continue to be tracked when the device isn't in use.
   non_nasa_keepalive: false
-  
-  #When enabled (set to true), this option will log the messages associated with undefined codes on the device. This is useful for debugging and identifying any unexpected or unknown codes that the device may receive during operation.
-  debug_log_undefined_messages: false
-  
-  #When enabled (set to true), this option logs messages associated with defined codes on the device. This helps in monitoring the behavior of the device by recording the activity related to known, expected codes.
-  debug_log_messages: false
 
   # Capabilities configure the features alle devices of your AC system have (all parts of this section are optional). 
   # All capabilities are off by default, you need to enable only those your devices have.

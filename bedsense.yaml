@@ -20,8 +20,8 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_pwd
   manual_ip:
-    static_ip: 10.0.16.18
-    gateway: 10.0.16.1
+    static_ip: 10.15.16.18
+    gateway: 10.15.16.1
     subnet: 255.255.255.0
 
 captive_portal:
