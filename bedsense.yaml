@@ -1,5 +1,7 @@
 esphome:
   name: bedmotionsense
+  friendly_name: BedSense
+  area: Caleb's Room
 
 esp8266:
   board: nodemcuv2
@@ -28,14 +30,14 @@ captive_portal:
     
 sensor:
   - platform: wifi_signal
-    name: "BedMotionSense WiFi Strength"
+    name: "WiFi Strength"
     update_interval: 480s
 
 binary_sensor:
   - platform: status
-    name: "BedMotionSense Status"
+    name: "Status"
 
   - platform: gpio
     pin: D2
-    name: "Bedroom Motion"
+    name: "Motion"
     device_class: motion

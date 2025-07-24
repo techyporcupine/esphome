@@ -1,5 +1,7 @@
 esphome:
   name: cabinetesp
+  friendly_name: Cabinet
+  area: Kitchen
 
 esp8266:
   board: esp12e
@@ -27,17 +29,17 @@ captive_portal:
     
 sensor:
   - platform: wifi_signal
-    name: "CabinetESP WiFi Strength"
+    name: "WiFi Strength"
     update_interval: 480s
 
 binary_sensor:
   - platform: status
-    name: "CabinetESP Status"
+    name: "Status"
 
 # Example configuration entry
 light:
   - platform: monochromatic
-    name: "Cabinet Lights"
+    name: "Lights"
     output: output_component1
     restore_mode: RESTORE_DEFAULT_OFF
     effects:

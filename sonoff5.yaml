@@ -1,5 +1,7 @@
 esphome:
   name: sonoff5
+  friendly_name: Door
+  area: Caleb's Room
 
 esp8266:
   board: sonoff_basic
@@ -28,12 +30,12 @@ captive_portal:
     
 sensor:
   - platform: wifi_signal
-    name: "Sonoff5 WiFi Strength"
+    name: "WiFi Strength"
     update_interval: 480s
 
 binary_sensor:
   - platform: status
-    name: "Sonoff5 Status"
+    name: "Status"
 
   - platform: gpio
     pin:
@@ -42,13 +44,13 @@ binary_sensor:
         input: true
         pullup: true
       inverted: true
-    name: "Door Lights Button"
+    name: "Button"
     on_press:
       - light.toggle: relay
 
 light:
   - platform: binary
-    name: "Door Lights"
+    name: "Lights"
     output: light_output
     id: relay
     restore_mode: RESTORE_DEFAULT_OFF

@@ -1,5 +1,7 @@
 esphome:
-  name: sunroomac
+  name: minisplit
+  friendly_name: Mini-Split
+  area: Sunroom
 
 esp32:
   board: esp32dev
@@ -29,6 +31,9 @@ wifi:
     gateway: 10.15.16.1
     subnet: 255.255.255.0
 
+network:
+    enable_ipv6: true
+
 bluetooth_proxy:
   active: true
 
@@ -44,12 +49,12 @@ captive_portal:
         
 sensor:
   - platform: wifi_signal
-    name: "SunroomAC WiFi Strength"
+    name: "WiFi Strength"
     update_interval: 480s
 
 binary_sensor:
   - platform: status
-    name: "SunroomAC Status"
+    name: "Status"
 
 #light:
 #  - platform: esp32_rmt_led_strip
@@ -123,7 +128,7 @@ samsung_ac:
 
       # Creates climate control in Home Assistant. A climate control combines multiple of the controls below (like temperature, mode etc.)
       climate:
-        name: "SunroomAC"
+        name: "Climate"
 
       # The controls directly below are all included in the climate control. Its adviced to only add the climate control and skip the extra controls.
       room_temperature:

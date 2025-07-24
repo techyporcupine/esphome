@@ -1,5 +1,7 @@
 esphome:
   name: bedrgb
+  friendly_name: Bed RGB
+  area: Caleb's Room
 
 esp8266:
   board: nodemcuv2
@@ -28,17 +30,17 @@ captive_portal:
     
 sensor:
   - platform: wifi_signal
-    name: "BedRGB WiFi Strength"
+    name: "WiFi Strength"
     update_interval: 480s
 
 binary_sensor:
   - platform: status
-    name: "BedRGB Status"
+    name: "Status"
 
 # Example configuration entry
 light:
   - platform: rgb
-    name: "Head of Bed RGB"
+    name: "Head of Bed"
     red: headred
     green: headgreen
     blue: headblue
@@ -63,7 +65,7 @@ light:
       - flicker:
 
   - platform: rgb
-    name: "Foot of Bed RGB"
+    name: "Foot of Bed"
     red: foodred
     green: footgreen
     blue: footblue

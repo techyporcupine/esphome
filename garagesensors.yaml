@@ -1,5 +1,7 @@
 esphome:
   name: garagesensors
+  friendly_name: Garage
+  area: Outside
 
 esp8266:
   board: nodemcuv2
@@ -29,7 +31,7 @@ captive_portal:
     
 sensor:
   - platform: wifi_signal
-    name: "GarageSensors WiFi Strength"
+    name: "WiFi Strength"
     update_interval: 480s
 
   - platform: ultrasonic
@@ -55,7 +57,7 @@ sensor:
 
 text_sensor:
   - platform: template
-    name: "Garage Door 1 state"
+    name: "Door 1 state"
     id: "garage1_state"
     lambda: |-
       if (id(ultrasonic_sensor1).state >= 0.05 && id(ultrasonic_sensor1).state <= 0.22) {
@@ -69,7 +71,7 @@ text_sensor:
       }
     update_interval: 2s
   - platform: template
-    name: "Garage Door 2 state"
+    name: "Door 2 state"
     id: "garage2_state"
     lambda: |-
       if (id(ultrasonic_sensor2).state >= 0.05 && id(ultrasonic_sensor2).state <= 0.22) {
@@ -91,17 +93,17 @@ binary_sensor:
 switch:
   - platform: gpio
     pin: D2
-    name: "Garage Door 1 Relay"
+    name: "Door 1 Relay"
     id: door1_relay
   - platform: gpio
     pin: D6
-    name: "Garage Door 2 Relay"
+    name: "Door 2 Relay"
     id: door2_relay
     inverted: true
 cover:
   - platform: template
     device_class: garage
-    name: "Garage Door 1"
+    name: "Door 1"
     id: garage_door_1
     open_action:
       - cover.template.publish:
@@ -138,7 +140,7 @@ cover:
 
   - platform: template
     device_class: garage
-    name: "Garage Door 2"
+    name: "Door 2"
     id: garage_door_2
     open_action:
       - cover.template.publish:
