@@ -1,0 +1,102 @@
+esphome:
+  name: kitchencabinetesp
+  friendly_name: Kitchen Cabinet
+  area: Kitchen
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+    version: recommended
+    sdkconfig_options:
+      # @grigi found in testing that these options resulted in better responsiveness.
+      # BLE 4.2 is supported by ALL ESP32 boards that have bluetooth, the original and derivatives.
+      CONFIG_BT_BLE_42_FEATURES_SUPPORTED: y
+      # Also enable this on any derivative boards (S2, C3 etc) but not the original ESP32.
+      CONFIG_BT_BLE_50_FEATURES_SUPPORTED: y
+      # Extend the watchdog timeout, so the device reboots if the device appears locked up for over 10 seconds.
+      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "10"
+
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption: 
+    key: !secret encryption_key
+
+ota:
+ - platform: esphome
+   password: !secret ota_pwd
+
+wifi:
+  ssid: !secret wpa3_ssid
+  password: !secret wpa3_pwd
+  manual_ip:
+    static_ip: 10.15.16.23
+    gateway: 10.15.16.1
+    subnet: 255.255.255.0
+
+network:
+    enable_ipv6: true
+
+bluetooth_proxy:
+  active: true
+
+captive_portal:
+        
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Strength"
+    update_interval: 480s
+
+binary_sensor:
+  - platform: status
+    name: "Status"
+
+#light:
+#  - platform: esp32_rmt_led_strip
+#    rgb_order: GRB
+#    pin: 27
+#    num_leds: 1
+#    chipset: SK6812
+#    name: "NeoPixel Light"
+#    id: led
+#    effects:
+#      - pulse:
+#          name: "Slow Pulse"
+#          transition_length: 250ms
+#          update_interval: 250ms
+#          min_brightness: 50%
+#          max_brightness: 100%
+#      - pulse:
+#          name: "Fast Pulse"
+#          transition_length: 100ms
+#          update_interval: 100ms
+#          min_brightness: 50%
+#          max_brightness: 100%
+
+light:
+  - platform: monochromatic
+    name: "Lights"
+    output: output_component1
+    restore_mode: RESTORE_DEFAULT_OFF
+    effects:
+      - pulse:
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 0.5s
+          update_interval: 0.5s
+          min_brightness: 0%
+          max_brightness: 100%
+      - pulse:
+          name: "Slow Pulse"
+          # transition_length: 1s      # defaults to 1s
+          update_interval: 2s
+
+# Example output entry
+output:
+  - platform: ledc
+    id: output_component1
+    pin: 1

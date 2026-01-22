@@ -47,3 +47,4 @@ fan:
   - platform: speed
     output: pwm_output
     name: "Cabinet Fan"
+    restore_mode: RESTORE_DEFAULT_ON

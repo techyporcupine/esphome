@@ -84,7 +84,7 @@ binary_sensor:
 
 # Import custom component from GitHub
 external_components:
-  - source: github://techyporcupine/esphome_samsung_ac@temp-fix # use @main if you want the latest development (possibly unstable?)
+  - source: github://omerfaruk-aran/esphome_samsung_hvac_bus@main # use @main if you want the latest development (possibly unstable?)
     components: [samsung_ac]
     refresh: 0s
 
@@ -137,22 +137,22 @@ samsung_ac:
 
       # If your AC sits near or inside the ceiling, the reported room temperature is often a little bit heigher then whats 
       # measured below. This property can be used to correct that value.
-      room_temperature_offset: -2.5
+      #room_temperature_offset: -2.5
 
       # Only supported on NASA devices
       room_humidity:
         name: "Indoor Humidity"
       
-      custom_sensor:
-      - name: "Indoor Temperature Fixed"
-        id: sunroomac_temp_fix
-        message: 0x4204
-        device_class: temperature
-        state_class: measurement
-        unit_of_measurement: "°C"
-        accuracy_decimals: 2
-        filters:
-        - multiply: 0.1
+      #custom_sensor:
+      #- name: "Indoor Temperature Fixed"
+      #  id: sunroomac_temp_fix
+      #  message: 0x4204
+      #  device_class: temperature
+      #  state_class: measurement
+      #  unit_of_measurement: "°C"
+      #  accuracy_decimals: 2
+      #  filters:
+      #  - multiply: 0.1
 
     - address: "10.00.00"
       # This sensor captures and monitors specific error codes returned by the HVAC system.
