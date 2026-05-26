@@ -36,21 +36,21 @@ sensor:
 
   - platform: ultrasonic
     id: ultrasonic_sensor1
-    trigger_pin: D1
-    echo_pin: D0
+    trigger_pin: D5
+    echo_pin: D3
     name: "Garage Door 1 Sonar"
     update_interval: 2s
-    internal: true
+    #internal: true
     filters:
       filter_out: nan
     timeout: 9m
   - platform: ultrasonic
     id: ultrasonic_sensor2
-    trigger_pin: D3
-    echo_pin: D5
+    trigger_pin: D0
+    echo_pin: D1
     name: "Garage Door 2 Sonar"
     update_interval: 2s
-    internal: true
+    #internal: true
     filters:
       filter_out: nan
     timeout: 9m
@@ -92,11 +92,11 @@ binary_sensor:
 
 switch:
   - platform: gpio
-    pin: D2
+    pin: D6
     name: "Door 1 Relay"
     id: door1_relay
   - platform: gpio
-    pin: D6
+    pin: D2
     name: "Door 2 Relay"
     id: door2_relay
     inverted: true
