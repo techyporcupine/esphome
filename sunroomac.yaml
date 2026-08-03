@@ -44,8 +44,6 @@ uart:
   # For older devices it could also be 2400. But you should start with 9600.
   baud_rate: 9600
   parity: EVEN
-
-captive_portal:
         
 sensor:
   - platform: wifi_signal
@@ -143,6 +141,14 @@ samsung_ac:
       room_humidity:
         name: "Indoor Humidity"
       
+
+      indoor_eva_in_temperature:
+        name: "EVA In temperature"
+
+      indoor_eva_out_temperature:
+        name: "EVA Out temperature"
+
+      # this was pushed to main to replace old temp sensor.
       #custom_sensor:
       #- name: "Indoor Temperature Fixed"
       #  id: sunroomac_temp_fix
@@ -162,6 +168,14 @@ samsung_ac:
       error_code:
         name: "Error Code"
 
+      # Outdoor operation mode text sensor
+      outdoor_operation_odu_mode:
+        name: "ODU Mode"  # Displays the operational mode of the outdoor unit
+
+      # Outdoor operation heat/cool mode text sensor
+      outdoor_operation_heatcool:
+        name: "ODU Heat/Cool"  # Displays whether the outdoor unit is in heating or cooling mode
+
       # Only supported on NASA based heatpumps
       outdoor_temperature: # Should be used with outdoor device address
         name: "Outdoor Temperature"
@@ -175,3 +189,13 @@ samsung_ac:
       # It calculates the total energy consumed over time, allowing users to monitor and analyze energy efficiency.
       outdoor_cumulative_energy:
         name: "Outdoor Cumulative Energy"
+
+      # This sensor measures the current drawn by the outdoor unit in Amperes.
+      # Monitoring current values helps identify electrical irregularities and ensure safe power levels in the system.
+      outdoor_current:
+        name: "Outdoor Current"
+
+      # This sensor tracks the voltage supplied to the outdoor unit in Volts.
+      # Consistent voltage readings indicate stable power delivery, while deviations can help detect electrical issues in the system.
+      outdoor_voltage:
+        name: "Outdoor Voltage"

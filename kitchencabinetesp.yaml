@@ -8,15 +8,6 @@ esp32:
   framework:
     type: esp-idf
     version: recommended
-    sdkconfig_options:
-      # @grigi found in testing that these options resulted in better responsiveness.
-      # BLE 4.2 is supported by ALL ESP32 boards that have bluetooth, the original and derivatives.
-      CONFIG_BT_BLE_42_FEATURES_SUPPORTED: y
-      # Also enable this on any derivative boards (S2, C3 etc) but not the original ESP32.
-      CONFIG_BT_BLE_50_FEATURES_SUPPORTED: y
-      # Extend the watchdog timeout, so the device reboots if the device appears locked up for over 10 seconds.
-      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "10"
-
 
 # Enable logging
 logger:
@@ -33,27 +24,89 @@ ota:
 wifi:
   ssid: !secret wpa3_ssid
   password: !secret wpa3_pwd
+  output_power: 12
   manual_ip:
     static_ip: 10.15.16.23
     gateway: 10.15.16.1
     subnet: 255.255.255.0
 
 network:
-    enable_ipv6: true
+  enable_ipv6: true
 
-bluetooth_proxy:
-  active: true
+uart:
+  tx_pin: GPIO1
+  rx_pin: GPIO3
+  baud_rate: 256000
+  parity: NONE
+  stop_bits: 1
 
-captive_portal:
-        
+ld2410:
+
 sensor:
   - platform: wifi_signal
     name: "WiFi Strength"
     update_interval: 480s
 
+  - platform: ld2410
+    moving_distance:
+      name : Moving Distance
+    still_distance:
+      name: Still Distance
+    moving_energy:
+      name: Move Energy
+    still_energy:
+      name: Still Energy
+    detection_distance:
+      name: Detection Distance
+
 binary_sensor:
   - platform: status
     name: "Status"
+
+  - platform: ld2410
+    has_target:
+      name: Presence
+    has_moving_target:
+      name: Moving Target
+    has_still_target:
+      name: Still Target
+
+number:
+  - platform: ld2410
+    timeout:
+      name: Timeout
+    max_move_distance_gate:
+      name: Max Move Distance Gate
+    max_still_distance_gate:
+      name: Max Still Distance Gate
+
+switch:
+  - platform: ld2410
+    engineering_mode:
+      name: Engineering mode
+    bluetooth:
+      name: Control bluetooth
+
+button:
+  - platform: ld2410
+    factory_reset:
+      name: "LD2410 Factory Reset"
+    restart:
+      name: "LD2410 Reboot"
+    query_params:
+      name: "LD2410 Query Params"
+
+text_sensor:
+  - platform: ld2410
+    version:
+      name: "LD2410 Firmware Version"
+    mac_address:
+      name: "LD2410 MAC Address"
+
+select:
+  - platform: ld2410
+    distance_resolution:
+      name: Distance resolution
 
 #light:
 #  - platform: esp32_rmt_led_strip
@@ -99,4 +152,4 @@ light:
 output:
   - platform: ledc
     id: output_component1
-    pin: 1
+    pin: 2

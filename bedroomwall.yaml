@@ -26,8 +26,6 @@ wifi:
     gateway: 10.15.16.1
     subnet: 255.255.255.0
 
-captive_portal:
-    
 sensor:
   - platform: wifi_signal
     name: "WiFi Strength"

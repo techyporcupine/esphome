@@ -1,0 +1,104 @@
+esphome:
+  name: garagecorner
+  friendly_name: Garage Corner
+  area: Garage
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+    version: recommended
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption: 
+    key: !secret encryption_key
+
+ota:
+ - platform: esphome
+   password: !secret ota_pwd
+
+wifi:
+  ssid: !secret wpa3_ssid
+  password: !secret wpa3_pwd
+  manual_ip:
+    static_ip: 10.15.16.24
+    gateway: 10.15.16.1
+    subnet: 255.255.255.0
+
+network:
+  enable_ipv6: true
+
+bluetooth_proxy:
+  active: true
+
+
+        
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Strength"
+    update_interval: 480s
+
+  - platform: ultrasonic
+    id: ultrasonic_sensor
+    trigger_pin: 22
+    echo_pin: 25
+    name: "Softener Sonar"
+    update_interval: 5min
+    #internal: true
+    filters:
+      filter_out: nan
+    timeout: 9m
+
+  - platform: template
+    name: "Softener Salt Level"
+    unit_of_measurement: "%"
+    icon: "mdi:water-percent"
+    update_interval: 5min
+    lambda: |-
+      float distance = id(ultrasonic_sensor).state;
+      
+      // If the sensor is returning NaN, pass it through
+      if (isnan(distance)) {
+        return NAN;
+      }
+      
+      if (distance <= 0.2) {
+        return 100.0;
+      }
+      if (distance >= 1.5) {
+        return 0.0;
+      }
+      
+      // Linear conversion formula: 
+      // ((Max_Distance - Current_Distance) / (Max_Distance - Min_Distance)) * 100
+      return ((1.5 - distance) / (1.5 - 0.2)) * 100.0;
+
+binary_sensor:
+  - platform: status
+    name: "Status"
+
+light:
+  - platform: esp32_rmt_led_strip
+    rgb_order: GRB
+    pin: 27
+    num_leds: 1
+    chipset: SK6812
+    name: "NeoPixel Light"
+    id: led
+    effects:
+      - pulse:
+          name: "Slow Pulse"
+          transition_length: 250ms
+          update_interval: 250ms
+          min_brightness: 50%
+          max_brightness: 100%
+      - pulse:
+          name: "Fast Pulse"
+          transition_length: 100ms
+          update_interval: 100ms
+          min_brightness: 50%
+          max_brightness: 100%

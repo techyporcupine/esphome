@@ -18,7 +18,6 @@ def update_function(deviceyaml):
 update_function("bedrgb.yaml")
 update_function("bedroomwall.yaml")
 update_function("bedsense.yaml")
-update_function("dehumid.yaml")
 update_function("garagesensors.yaml")
 update_function("kitchencabinetesp.yaml")
 update_function("shelf_lamp.yaml")
