@@ -22,16 +22,15 @@ ota:
    password: !secret ota_pwd
 
 wifi:
-  ssid: !secret wpa3_ssid
-  password: !secret wpa3_pwd
-  output_power: 12
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
   manual_ip:
     static_ip: 10.15.16.23
     gateway: 10.15.16.1
     subnet: 255.255.255.0
 
-network:
-  enable_ipv6: true
+#network:
+#  enable_ipv6: true
 
 uart:
   tx_pin: GPIO1
