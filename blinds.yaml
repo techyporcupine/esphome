@@ -1,0 +1,98 @@
+# upload this code with `docker run --rm -v "${PWD}":/config --network=host -it ghcr.io/esphome/esphome run blinds.yaml --device 10.6.8.149` if needed
+esphome:
+  name: blinds
+  friendly_name: Blinds
+  area: Dorm Room
+  includes:
+    - stepper_control.h
+  libraries:
+    - "FastAccelStepper" 
+  on_boot:
+    - priority: -100
+      then:
+        - lambda: |-
+            // 1. Initialize the stepper hardware late in the boot process
+            init_fast_stepper();
+            
+            if (my_stepper) {
+              // 2. Restore the physical motor's coordinate
+              my_stepper->setCurrentPosition(id(saved_stepper_pos));
+              
+              // 3. Calculate the UI percentage
+              float restored_fraction = (176000.0 - id(saved_stepper_pos)) / 176000.0;
+              if (restored_fraction > 1.0) restored_fraction = 1.0;
+              if (restored_fraction < 0.0) restored_fraction = 0.0;
+              
+              // 4. Silently update the cover UI without triggering a movement
+              auto cover = id(dorm_blinds_cover);
+              cover->position = restored_fraction;
+              cover->publish_state();
+            }
+
+interval:
+  - interval: 3s
+    then:
+      - lambda: |-
+          if (my_stepper && !my_stepper->isRunning()) {
+            int32_t current_pos = my_stepper->getCurrentPosition();
+            
+            // Only trigger a flash write if the position actually changed
+            if (current_pos != id(saved_stepper_pos)) {
+              id(saved_stepper_pos) = current_pos;
+              ESP_LOGI("stepper", "Movement stopped. Saved new position to flash: %d", current_pos);
+            }
+          }
+
+globals:
+  - id: saved_stepper_pos
+    type: int32_t
+    restore_value: yes
+    initial_value: '0'
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+logger:
+
+api:
+  encryption: 
+    key: !secret encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret ota_pwd
+
+wifi:
+  ssid: !secret other_ssid
+  password: !secret other_pwd
+    
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Strength"
+    update_interval: 480s
+
+binary_sensor:
+  - platform: status
+    name: "Status"
+
+cover:
+  - platform: template
+    name: "Blinds"
+    id: dorm_blinds_cover
+    device_class: blind
+    optimistic: true
+    open_action:
+      - lambda: 'if (my_stepper) my_stepper->moveTo(0);'
+    close_action:
+      - lambda: 'if (my_stepper) my_stepper->moveTo(176000);' 
+    stop_action:
+      - lambda: 'if (my_stepper) my_stepper->stopMove();'
+    position_action:
+      - lambda: |-
+          if (my_stepper) {
+            // Maps 1.0 (Open) to 0 steps, and 0.0 (Closed) to 136,000 steps
+            long target_steps = 176000 - (pos * 176000.0);
+            my_stepper->moveTo(target_steps);
+          }
