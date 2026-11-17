@@ -22,7 +22,7 @@ ota:
    password: !secret ota_pwd
 
 wifi:
-  output_power: 12dB
+  output_power: 12dB # lowering wifi output power, these ESP32 supermicro boards suck with internal noise.
   ssid: !secret wifi_ssid
   password: !secret wifi_pwd
   manual_ip:
